@@ -1,15 +1,23 @@
 from PIL import Image
 import numpy as np
 
-def image_to_periods(image_path, output_width=100, output_height=None):
+def image_to_periods(image_path, max_width=100):
     # Open the image and convert it to grayscale
     img = Image.open(image_path).convert('L')
     
-    # Calculate the aspect ratio and resize the image
+    # Calculate the aspect ratio
     aspect_ratio = img.height / img.width
-    if output_height is None:
-        output_height = int(output_width * aspect_ratio)
-    img = img.resize((output_width, output_height))
+    
+    # Calculate new dimensions while preserving aspect ratio
+    if img.width > img.height:
+        new_width = max_width
+        new_height = int(max_width * aspect_ratio)
+    else:
+        new_height = max_width
+        new_width = int(max_width / aspect_ratio)
+    
+    # Resize the image
+    img = img.resize((new_width, new_height))
     
     # Convert the image to a numpy array
     img_array = np.array(img)
@@ -29,8 +37,8 @@ def image_to_periods(image_path, output_width=100, output_height=None):
     return output
 
 # Example usage
-image_path = "E:/IMG_4060_Original.jpg"
-result = image_to_periods(image_path, output_width=100)
+image_path = "path/to/your/image.jpg"
+result = image_to_periods(image_path, max_width=100)
 
 # Print the result
 print(result)
